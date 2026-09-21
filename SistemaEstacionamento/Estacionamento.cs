@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Estacionamento
+namespace SistemaEstacionamento
 {
     internal class Estacionamento
     {

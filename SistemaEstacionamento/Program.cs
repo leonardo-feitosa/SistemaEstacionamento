@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Estacionamento
+namespace SistemaEstacionamento
 {
     internal static class Program
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace Estacionamento
+namespace SistemaEstacionamento
 {
     internal class Veiculo
     {
