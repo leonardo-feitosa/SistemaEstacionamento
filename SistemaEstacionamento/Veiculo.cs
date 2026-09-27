@@ -9,22 +9,26 @@ namespace SistemaEstacionamento
 
         public string Cor { get; private set; }
 
-        public Veiculo(
-            string placa,
-            string modelo,
-            string cor)
+        public Veiculo( string placa, string modelo, string cor)
         {
-            Placa = string.IsNullOrWhiteSpace(placa)
-                ? "NÃO INFORMADA"
-                : placa.Trim().ToUpper();
+            if (string.IsNullOrWhiteSpace(placa))
+            {
+                throw new ArgumentException("A placa é obrigatória.", nameof(placa));
+            }
 
-            Modelo = string.IsNullOrWhiteSpace(modelo)
-                ? "NÃO INFORMADO"
-                : modelo.Trim().ToUpper();
+            if (string.IsNullOrWhiteSpace(modelo))
+            {
+               throw new ArgumentException("O modelo é obrigatório.", nameof(modelo));
+            }
 
-            Cor = string.IsNullOrWhiteSpace(cor)
-                ? "NÃO INFORMADA"
-                : cor.Trim().ToUpper();
+            if (string.IsNullOrWhiteSpace(cor))
+            {
+                throw new ArgumentException("A cor é obrigatória.", nameof(cor));
+            }
+
+            Placa = placa.Trim().ToUpper();
+            Modelo = modelo.Trim().ToUpper();
+            Cor = cor.Trim().ToUpper();
         }
 
         public bool AlterarModelo(string novoModelo)
@@ -34,9 +38,7 @@ namespace SistemaEstacionamento
                 return false;
             }
 
-            Modelo = novoModelo
-                .Trim()
-                .ToUpper();
+            Modelo = novoModelo.Trim().ToUpper();
 
             return true;
         }
@@ -48,9 +50,7 @@ namespace SistemaEstacionamento
                 return false;
             }
 
-            Cor = novaCor
-                .Trim()
-                .ToUpper();
+            Cor = novaCor.Trim().ToUpper();
 
             return true;
         }
@@ -63,3 +63,4 @@ namespace SistemaEstacionamento
         }
     }
 }
+

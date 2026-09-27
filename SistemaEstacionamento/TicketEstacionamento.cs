@@ -13,10 +13,24 @@ namespace SistemaEstacionamento
 
         public bool Finalizado { get; private set; }
 
-        public TicketEstacionamento(
-            int numeroTicket,
-            Veiculo veiculo)
+        public TicketEstacionamento( int numeroTicket, Veiculo veiculo)
         {
+            if (numeroTicket <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(numeroTicket),
+                    "O número do ticket deve ser maior que zero."
+                );
+            }
+
+            if (veiculo == null)
+            {
+                throw new ArgumentNullException(
+                    nameof(veiculo),
+                    "O veículo é obrigatório."
+                );
+            }
+
             NumeroTicket = numeroTicket;
             Veiculo = veiculo;
 
@@ -27,7 +41,15 @@ namespace SistemaEstacionamento
 
         public bool RegistrarPermanencia(int minutos)
         {
-            if (minutos <= 0 || Finalizado)
+            if (minutos <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(minutos),
+                    "Os minutos devem ser maiores que zero."
+                );
+            }
+
+            if (Finalizado)
             {
                 return false;
             }
@@ -68,11 +90,18 @@ namespace SistemaEstacionamento
 
         public void ExibirDados()
         {
-            string pago = Pago ? "Sim" : "Não";
-            string finalizado = Finalizado ? "Sim" : "Não";
-            string podeSair = PodeSair() ? "Sim" : "Não";
+            string pago =
+                Pago ? "Sim" : "Não";
 
-            Console.WriteLine($"Ticket: {NumeroTicket}");
+            string finalizado =
+                Finalizado ? "Sim" : "Não";
+
+            string podeSair =
+                PodeSair() ? "Sim" : "Não";
+
+            Console.WriteLine(
+                $"Ticket: {NumeroTicket}"
+            );
 
             Veiculo.ExibirDados();
 
@@ -80,9 +109,20 @@ namespace SistemaEstacionamento
                 $"Permanência: {MinutosPermanencia} minutos"
             );
 
-            Console.WriteLine($"Pago: {pago}");
-            Console.WriteLine($"Finalizado: {finalizado}");
-            Console.WriteLine($"Pode sair: {podeSair}");
+            Console.WriteLine(
+                $"Pago: {pago}"
+            );
+
+            Console.WriteLine(
+                $"Finalizado: {finalizado}"
+            );
+
+            Console.WriteLine(
+                $"Pode sair: {podeSair}"
+            );
         }
     }
+    
+
 }
+

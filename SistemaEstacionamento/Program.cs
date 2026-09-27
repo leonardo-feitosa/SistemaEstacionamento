@@ -109,98 +109,50 @@ namespace SistemaEstacionamento
             } while (opcao != 0);
         }
 
-        private static void RegistrarEntrada(
-            Estacionamento estacionamento)
+        private static void RegistrarEntrada(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("           REGISTRAR ENTRADA");
             Console.WriteLine("========================================");
             Console.WriteLine();
 
-            string placa;
+            Console.Write("Placa: ");
 
-            do
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            Console.Write("Modelo: ");
+
+            string modelo = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            Console.Write("Cor: ");
+
+            string cor = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            try
             {
-                Console.Write("Placa: ");
+                bool registrado = estacionamento.RegistrarEntrada(placa, modelo, cor);
 
-                placa =
-                    Console.ReadLine()?
-                        .Trim()
-                        .ToUpper()
-                    ?? string.Empty;
+                Console.WriteLine();
 
-                if (string.IsNullOrWhiteSpace(placa))
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Placa inválida.");
-                    Console.WriteLine();
-                }
-
-            } while (string.IsNullOrWhiteSpace(placa));
-
-            string modelo;
-
-            do
-            {
-                Console.Write("Modelo: ");
-
-                modelo =
-                    Console.ReadLine()?
-                        .Trim()
-                    ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(modelo))
+                if (registrado)
                 {
                     Console.WriteLine(
-                        "Modelo inválido."
+                        "Entrada registrada com sucesso."
                     );
                 }
-
-            } while (string.IsNullOrWhiteSpace(modelo));
-
-            string cor;
-
-            do
-            {
-                Console.Write("Cor: ");
-
-                cor =
-                    Console.ReadLine()?
-                        .Trim()
-                    ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(cor))
+                else
                 {
                     Console.WriteLine(
-                        "Cor inválida."
+                        "Não foi possível registrar a entrada."
                     );
                 }
-
-            } while (string.IsNullOrWhiteSpace(cor));
-
-            bool registrado =
-                estacionamento.RegistrarEntrada(
-                    placa,
-                    modelo,
-                    cor
-                );
-
-            Console.WriteLine();
-
-            if (registrado)
-            {
-                Console.WriteLine(
-                    "Entrada registrada com sucesso."
-                );
             }
-            else
+            catch (ArgumentException ex)
             {
-                Console.WriteLine(
-                    "Não foi possível registrar a entrada."
-                );
+                Console.WriteLine();
 
                 Console.WriteLine(
-                    "Verifique se a placa já possui um ticket aberto."
+                    $"Erro ao registrar entrada: {ex.Message}"
                 );
             }
         }
@@ -216,8 +168,7 @@ namespace SistemaEstacionamento
             estacionamento.ListarVeiculosAtivos();
         }
 
-        private static void BuscarVeiculo(
-            Estacionamento estacionamento)
+        private static void BuscarVeiculo(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("           BUSCAR VEÍCULO");
@@ -226,10 +177,7 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()? .Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(placa))
             {
@@ -244,8 +192,7 @@ namespace SistemaEstacionamento
             estacionamento.BuscarVeiculo(placa);
         }
 
-        private static void RegistrarPermanencia(
-            Estacionamento estacionamento)
+        private static void RegistrarPermanencia(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("       REGISTRAR PERMANÊNCIA");
@@ -254,68 +201,45 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(placa))
+            Console.Write("Informe os minutos de permanência: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int minutos))
             {
                 Console.WriteLine();
-                Console.WriteLine("Placa inválida.");
+
+                Console.WriteLine("Digite um número válido.");
 
                 return;
             }
 
-            int minutos;
-
-            while (true)
+            try
             {
-                Console.Write(
-                    "Informe os minutos de permanência: "
-                );
+                bool registrado = estacionamento.RegistrarPermanencia(placa, minutos);
 
-                if (!int.TryParse(
-                    Console.ReadLine(),
-                    out minutos))
+                Console.WriteLine();
+
+                if (registrado)
                 {
-                    Console.WriteLine(
-                        "Digite apenas números."
-                    );
-
-                    continue;
+                    Console.WriteLine("Permanência registrada com sucesso.");
                 }
-
-                if (minutos <= 0)
+                else
                 {
-                    Console.WriteLine(
-                        "Os minutos devem ser maiores que zero."
-                    );
-
-                    continue;
+                    Console.WriteLine("Não foi possível registrar a permanência.");
                 }
-
-                break;
             }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine();
 
-            bool registrado =
-                estacionamento.RegistrarPermanencia(
-                    placa,
-                    minutos
+                Console.WriteLine(
+                    $"Erro: {ex.Message}"
                 );
-
-            Console.WriteLine();
-
-            string mensagem =
-                registrado
-                    ? "Permanência registrada com sucesso."
-                    : "Não foi possível registrar a permanência.";
-
-            Console.WriteLine(mensagem);
+            }
         }
 
-        private static void RegistrarPagamento(
-            Estacionamento estacionamento)
+        private static void RegistrarPagamento(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("        REGISTRAR PAGAMENTO");
