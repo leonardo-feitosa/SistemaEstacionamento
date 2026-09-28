@@ -4,8 +4,10 @@ namespace SistemaEstacionamento
 {
     internal static class Program
     {
+        // Método principal da aplicação. Inicializa o estacionamento e mantém o menu em execução até o usuário escolher sair.
         private static void Main()
         {
+            // Cria uma única instância do estacionamento que será utilizada durante toda a execução do sistema.
             Estacionamento estacionamento = new Estacionamento();
 
             int opcao;
@@ -34,6 +36,7 @@ namespace SistemaEstacionamento
 
                 Console.Write("Escolha uma opção: ");
 
+                // Tenta converter a opção digitada para int. Caso não seja número, o menu é exibido novamente.
                 if (!int.TryParse(Console.ReadLine(), out opcao))
                 {
                     Console.WriteLine();
@@ -46,6 +49,7 @@ namespace SistemaEstacionamento
 
                 Console.Clear();
 
+                // Direciona a execução para o método correspondente à opção selecionada.
                 switch (opcao)
                 {
                     case 1:
@@ -101,6 +105,7 @@ namespace SistemaEstacionamento
                         break;
                 }
 
+                // Evita pausar quando o usuário escolhe encerrar o sistema.
                 if (opcao != 0)
                 {
                     Pausar();
@@ -109,7 +114,8 @@ namespace SistemaEstacionamento
             } while (opcao != 0);
         }
 
-        private static void RegistrarEntrada(Estacionamento estacionamento)
+        // Solicita os dados do veículo e tenta registrar sua entrada no estacionamento.
+        private static void RegistrarEntrada (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("           REGISTRAR ENTRADA");
@@ -130,35 +136,31 @@ namespace SistemaEstacionamento
 
             try
             {
+                // Envia os dados para a classe Estacionamento, onde o veículo e o ticket serão criados.
                 bool registrado = estacionamento.RegistrarEntrada(placa, modelo, cor);
 
                 Console.WriteLine();
 
                 if (registrado)
                 {
-                    Console.WriteLine(
-                        "Entrada registrada com sucesso."
-                    );
+                    Console.WriteLine("Entrada registrada com sucesso.");
                 }
                 else
                 {
-                    Console.WriteLine(
-                        "Não foi possível registrar a entrada."
-                    );
+                    Console.WriteLine("Não foi possível registrar a entrada.");
                 }
             }
             catch (ArgumentException ex)
             {
+                // Captura erros de dados inválidos lançados pelo construtor da classe Veiculo.
                 Console.WriteLine();
 
-                Console.WriteLine(
-                    $"Erro ao registrar entrada: {ex.Message}"
-                );
+                Console.WriteLine($"Erro ao registrar entrada: {ex.Message}");
             }
         }
 
-        private static void ListarVeiculos(
-            Estacionamento estacionamento)
+        // Exibe todos os veículos que ainda permanecem no estacionamento.
+        private static void ListarVeiculos (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("      VEÍCULOS NO ESTACIONAMENTO");
@@ -168,7 +170,8 @@ namespace SistemaEstacionamento
             estacionamento.ListarVeiculosAtivos();
         }
 
-        private static void BuscarVeiculo(Estacionamento estacionamento)
+        // Solicita uma placa e exibe os registros encontrados para o veículo.
+        private static void BuscarVeiculo (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("           BUSCAR VEÍCULO");
@@ -177,8 +180,9 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa = Console.ReadLine()? .Trim() ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
+            // Impede a realização da busca quando nenhuma placa válida for informada.
             if (string.IsNullOrWhiteSpace(placa))
             {
                 Console.WriteLine();
@@ -192,7 +196,8 @@ namespace SistemaEstacionamento
             estacionamento.BuscarVeiculo(placa);
         }
 
-        private static void RegistrarPermanencia(Estacionamento estacionamento)
+        // Solicita a placa e o tempo de permanência para atualizar o ticket aberto do veículo.
+        private static void RegistrarPermanencia (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("       REGISTRAR PERMANÊNCIA");
@@ -205,6 +210,7 @@ namespace SistemaEstacionamento
 
             Console.Write("Informe os minutos de permanência: ");
 
+            // Tenta converter o valor informado para int antes de enviar para a regra de negócio.
             if (!int.TryParse(Console.ReadLine(), out int minutos))
             {
                 Console.WriteLine();
@@ -216,6 +222,7 @@ namespace SistemaEstacionamento
 
             try
             {
+                // Localiza o ticket aberto e solicita o registro da permanência.
                 bool registrado = estacionamento.RegistrarPermanencia(placa, minutos);
 
                 Console.WriteLine();
@@ -231,15 +238,15 @@ namespace SistemaEstacionamento
             }
             catch (ArgumentOutOfRangeException ex)
             {
+                // Captura a exceção gerada quando os minutos informados são iguais ou menores que zero.
                 Console.WriteLine();
 
-                Console.WriteLine(
-                    $"Erro: {ex.Message}"
-                );
+                Console.WriteLine($"Erro: {ex.Message}");
             }
         }
 
-        private static void RegistrarPagamento(Estacionamento estacionamento)
+        // Solicita a placa e tenta registrar o pagamento do ticket aberto.
+        private static void RegistrarPagamento (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("        REGISTRAR PAGAMENTO");
@@ -248,11 +255,9 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
+            // Interrompe o método quando nenhuma placa válida for informada.
             if (string.IsNullOrWhiteSpace(placa))
             {
                 Console.WriteLine();
@@ -261,33 +266,24 @@ namespace SistemaEstacionamento
                 return;
             }
 
-            bool registrado =
-                estacionamento.RegistrarPagamento(
-                    placa
-                );
+            bool registrado = estacionamento.RegistrarPagamento (placa);
 
             Console.WriteLine();
 
             if (registrado)
             {
-                Console.WriteLine(
-                    "Pagamento registrado com sucesso."
-                );
+                Console.WriteLine("Pagamento registrado com sucesso.");
             }
             else
             {
-                Console.WriteLine(
-                    "Não foi possível registrar o pagamento."
-                );
+                Console.WriteLine("Não foi possível registrar o pagamento.");
 
-                Console.WriteLine(
-                    "O ticket pode não existir, já estar pago ou estar finalizado."
-                );
+                Console.WriteLine("O ticket pode não existir, já estar pago ou estar finalizado.");
             }
         }
 
-        private static void LiberarSaida(
-            Estacionamento estacionamento)
+        // Solicita a placa e tenta finalizar o ticket para liberar a saída do veículo.
+        private static void LiberarSaida (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("            LIBERAR SAÍDA");
@@ -296,10 +292,7 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(placa))
             {
@@ -309,21 +302,17 @@ namespace SistemaEstacionamento
                 return;
             }
 
-            bool liberado =
-                estacionamento.LiberarSaida(
-                    placa
-                );
+            // Solicita ao estacionamento a finalização do ticket correspondente à placa.
+            bool liberado = estacionamento.LiberarSaida(placa);
 
             Console.WriteLine();
 
-            string mensagem =
-                liberado
-                    ? "Saída liberada com sucesso."
-                    : "Saída não autorizada.";
+            string mensagem = liberado ? "Saída liberada com sucesso." : "Saída não autorizada.";
 
             Console.WriteLine(mensagem);
         }
 
+        // Solicita a placa e permite alterar a cor do veículo associado ao ticket aberto.
         private static void AlterarCor(
             Estacionamento estacionamento)
         {
@@ -334,10 +323,7 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(placa))
             {
@@ -349,29 +335,20 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a nova cor: ");
 
-            string novaCor =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string novaCor = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            bool alterado =
-                estacionamento.AlterarCorVeiculo(
-                    placa,
-                    novaCor
-                );
+            // Solicita à classe Estacionamento a alteração da cor do veículo localizado.
+            bool alterado = estacionamento.AlterarCorVeiculo (placa, novaCor);
 
             Console.WriteLine();
 
-            string mensagem =
-                alterado
-                    ? "Cor alterada com sucesso."
-                    : "Não foi possível alterar a cor.";
+            string mensagem = alterado ? "Cor alterada com sucesso." : "Não foi possível alterar a cor.";
 
             Console.WriteLine(mensagem);
         }
 
-        private static void AlterarModelo(
-            Estacionamento estacionamento)
+        // Solicita a placa e permite alterar o modelo do veículo associado ao ticket aberto.
+        private static void AlterarModelo (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("       ALTERAR MODELO DO VEÍCULO");
@@ -380,10 +357,7 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite a placa: ");
 
-            string placa =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(placa))
             {
@@ -395,29 +369,21 @@ namespace SistemaEstacionamento
 
             Console.Write("Digite o novo modelo: ");
 
-            string novoModelo =
-                Console.ReadLine()?
-                    .Trim()
-                ?? string.Empty;
+            string novoModelo = Console.ReadLine()?.Trim() ?? string.Empty;
 
+            // Solicita à classe Estacionamento a alteração do modelo do veículo localizado.
             bool alterado =
-                estacionamento.AlterarModeloVeiculo(
-                    placa,
-                    novoModelo
-                );
+                estacionamento.AlterarModeloVeiculo (placa, novoModelo);
 
             Console.WriteLine();
 
-            string mensagem =
-                alterado
-                    ? "Modelo alterado com sucesso."
-                    : "Não foi possível alterar o modelo.";
+            string mensagem = alterado ? "Modelo alterado com sucesso." : "Não foi possível alterar o modelo.";
 
             Console.WriteLine(mensagem);
         }
 
-        private static void ListarTicketsPagos(
-            Estacionamento estacionamento)
+        // Exibe todos os tickets que já possuem pagamento registrado.
+        private static void ListarTicketsPagos (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("            TICKETS PAGOS");
@@ -427,8 +393,8 @@ namespace SistemaEstacionamento
             estacionamento.ListarTicketsPagos();
         }
 
-        private static void ListarTicketsPendentes(
-            Estacionamento estacionamento)
+        // Exibe todos os tickets que ainda estão pendentes de pagamento.
+        private static void ListarTicketsPendentes (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("          TICKETS PENDENTES");
@@ -438,32 +404,27 @@ namespace SistemaEstacionamento
             estacionamento.ListarTicketsPendentes();
         }
 
-        private static void ExibirQuantidadeVeiculos(
-            Estacionamento estacionamento)
+        // Consulta e exibe a quantidade atual de veículos que permanecem no pátio.
+        private static void ExibirQuantidadeVeiculos (Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("     QUANTIDADE DE VEÍCULOS NO PÁTIO");
             Console.WriteLine("========================================");
             Console.WriteLine();
 
-            int quantidade =
-                estacionamento
-                    .QuantidadeVeiculosNoPatio();
+            int quantidade = estacionamento.QuantidadeVeiculosNoPatio();
 
-            string mensagem =
-                quantidade == 1
-                    ? "Existe 1 veículo no pátio."
-                    : $"Existem {quantidade} veículos no pátio.";
+            // Utiliza operador ternário para ajustar a mensagem entre singular e plural.
+            string mensagem = quantidade == 1 ? "Existe 1 veículo no pátio." : $"Existem {quantidade} veículos no pátio.";
 
             Console.WriteLine(mensagem);
         }
 
+        // Pausa a execução até que o usuário pressione alguma tecla.
         private static void Pausar()
         {
             Console.WriteLine();
-            Console.WriteLine(
-                "Pressione qualquer tecla para continuar..."
-            );
+            Console.WriteLine("Pressione qualquer tecla para continuar...");
 
             Console.ReadKey();
         }
