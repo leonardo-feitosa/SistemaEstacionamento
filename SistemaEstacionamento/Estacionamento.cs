@@ -25,9 +25,10 @@
             // Verifica se já existe um ticket aberto para a mesma placa.
             TicketEstacionamento? ticketAberto = LocalizarTicketAbertoPorPlaca(veiculo.Placa);
 
+            // Quando já existe um ticket aberto, lança uma exceção específica de regra de negócio.
             if (ticketAberto != null)
             {
-                return false;
+                throw new VeiculoJaEstaNoPatioException($"O veículo de placa {veiculo.Placa} já está no estacionamento.");
             }
 
             // Cria um novo ticket utilizando o próximo número disponível.
@@ -50,7 +51,7 @@
 
             if (ticket == null)
             {
-                return false;
+                throw new TicketNaoEncontradoException($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
             }
 
             // A própria classe TicketEstacionamento valida e registra os minutos informados.
@@ -63,9 +64,10 @@
             // Localiza o ticket aberto correspondente à placa informada.
             TicketEstacionamento? ticket = LocalizarTicketAbertoPorPlaca(placa);
 
+            // Lança uma exceção específica quando não existe ticket aberto para a placa.
             if (ticket == null)
             {
-                return false;
+                throw new TicketNaoEncontradoException($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
             }
 
             // Solicita ao próprio ticket que registre o pagamento.
@@ -78,9 +80,10 @@
             // Localiza o ticket aberto correspondente à placa informada.
             TicketEstacionamento? ticket = LocalizarTicketAbertoPorPlaca(placa);
 
+            // Lança uma exceção específica quando não existe ticket aberto para a placa.
             if (ticket == null)
             {
-                return false;
+                throw new TicketNaoEncontradoException($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
             }
 
             // Solicita ao ticket a finalização da saída.
@@ -93,9 +96,10 @@
             // Localiza o ticket aberto correspondente à placa informada.
             TicketEstacionamento? ticket = LocalizarTicketAbertoPorPlaca(placa);
 
+            // Lança uma exceção específica quando não existe ticket aberto para a placa.
             if (ticket == null)
             {
-                return false;
+                throw new TicketNaoEncontradoException($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
             }
 
             // A alteração é realizada pela própria classe Veiculo.
@@ -108,9 +112,10 @@
             // Localiza o ticket aberto correspondente à placa informada.
             TicketEstacionamento? ticket = LocalizarTicketAbertoPorPlaca(placa);
 
+            // Lança uma exceção específica quando não existe ticket aberto para a placa.
             if (ticket == null)
             {
-                return false;
+                throw new TicketNaoEncontradoException($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
             }
 
             // A alteração é realizada pela própria classe Veiculo.

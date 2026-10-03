@@ -144,11 +144,14 @@ namespace SistemaEstacionamento
                 if (registrado)
                 {
                     Console.WriteLine("Entrada registrada com sucesso.");
-                }
-                else
-                {
-                    Console.WriteLine("Não foi possível registrar a entrada.");
-                }
+                }                
+            }
+            catch (VeiculoJaEstaNoPatioException ex)
+            {
+                // Captura a exceção específica de regra de negócio quando o veículo já está no pátio
+                Console.WriteLine();
+
+                Console.WriteLine($"Entrada não permitida: {ex.Message}");
             }
             catch (ArgumentException ex)
             {
@@ -231,10 +234,12 @@ namespace SistemaEstacionamento
                 {
                     Console.WriteLine("Permanência registrada com sucesso.");
                 }
-                else
-                {
-                    Console.WriteLine("Não foi possível registrar a permanência.");
-                }
+            }
+            catch (TicketNaoEncontradoException ex)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine($"Permanência não realizado: {ex.Message}");
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -246,7 +251,7 @@ namespace SistemaEstacionamento
         }
 
         // Solicita a placa e tenta registrar o pagamento do ticket aberto.
-        private static void RegistrarPagamento (Estacionamento estacionamento)
+        private static void RegistrarPagamento(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("        REGISTRAR PAGAMENTO");
@@ -266,19 +271,30 @@ namespace SistemaEstacionamento
                 return;
             }
 
-            bool registrado = estacionamento.RegistrarPagamento (placa);
-
-            Console.WriteLine();
-
-            if (registrado)
+            try
             {
-                Console.WriteLine("Pagamento registrado com sucesso.");
+                // Solicita à classe Estacionamento o registro do pagamento do ticket aberto.
+                bool registrado = estacionamento.RegistrarPagamento(placa);
+
+                Console.WriteLine();
+
+                if (registrado)
+                {
+                    Console.WriteLine("Pagamento registrado com sucesso.");
+                }
+                else
+                {
+                    // Neste ponto o ticket existe, mas a própria classe TicketEstacionamento recusou a operação.
+                    Console.WriteLine("Não foi possível registrar o pagamento.");
+                    Console.WriteLine("O ticket já pode estar pago.");
+                }
             }
-            else
+            catch (TicketNaoEncontradoException ex)
             {
-                Console.WriteLine("Não foi possível registrar o pagamento.");
+                // Captura a exceção específica quando não existe ticket aberto para a placa informada.
+                Console.WriteLine();
 
-                Console.WriteLine("O ticket pode não existir, já estar pago ou estar finalizado.");
+                Console.WriteLine($"Pagamento não realizado: {ex.Message}");
             }
         }
 
@@ -302,14 +318,23 @@ namespace SistemaEstacionamento
                 return;
             }
 
-            // Solicita ao estacionamento a finalização do ticket correspondente à placa.
-            bool liberado = estacionamento.LiberarSaida(placa);
+            try
+            {
+                // Solicita ao estacionamento a finalização do ticket correspondente à placa.
+                bool liberado = estacionamento.LiberarSaida(placa);
 
-            Console.WriteLine();
+                Console.WriteLine();
 
-            string mensagem = liberado ? "Saída liberada com sucesso." : "Saída não autorizada.";
+                string mensagem = liberado ? "Saída liberada com sucesso." : "Saída não autorizada.";
 
-            Console.WriteLine(mensagem);
+                Console.WriteLine(mensagem);
+            }
+            catch (TicketNaoEncontradoException ex)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine($"Saída não realizada: {ex.Message}");
+            }
         }
 
         // Solicita a placa e permite alterar a cor do veículo associado ao ticket aberto.
@@ -337,14 +362,23 @@ namespace SistemaEstacionamento
 
             string novaCor = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            // Solicita à classe Estacionamento a alteração da cor do veículo localizado.
-            bool alterado = estacionamento.AlterarCorVeiculo (placa, novaCor);
+            try
+            {
+                // Solicita à classe Estacionamento a alteração da cor do veículo localizado.
+                bool alterado = estacionamento.AlterarCorVeiculo(placa, novaCor);
 
-            Console.WriteLine();
+                Console.WriteLine();
 
-            string mensagem = alterado ? "Cor alterada com sucesso." : "Não foi possível alterar a cor.";
+                string mensagem = alterado ? "Cor alterada com sucesso." : "Não foi possível alterar a cor.";
 
-            Console.WriteLine(mensagem);
+                Console.WriteLine(mensagem);
+            }
+            catch (TicketNaoEncontradoException ex)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine($"Alteração de cor não realizada: {ex.Message}");
+            }
         }
 
         // Solicita a placa e permite alterar o modelo do veículo associado ao ticket aberto.
@@ -371,15 +405,23 @@ namespace SistemaEstacionamento
 
             string novoModelo = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            // Solicita à classe Estacionamento a alteração do modelo do veículo localizado.
-            bool alterado =
-                estacionamento.AlterarModeloVeiculo (placa, novoModelo);
+            try
+            {
+                // Solicita à classe Estacionamento a alteração do modelo do veículo localizado.
+                bool alterado = estacionamento.AlterarModeloVeiculo(placa, novoModelo);
 
-            Console.WriteLine();
+                Console.WriteLine();
 
-            string mensagem = alterado ? "Modelo alterado com sucesso." : "Não foi possível alterar o modelo.";
+                string mensagem = alterado ? "Modelo alterado com sucesso." : "Não foi possível alterar o modelo.";
 
-            Console.WriteLine(mensagem);
+                Console.WriteLine(mensagem);
+            }
+            catch (TicketNaoEncontradoException ex)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine($"Alteração de modelo não realizado: {ex.Message}");
+            }
         }
 
         // Exibe todos os tickets que já possuem pagamento registrado.
