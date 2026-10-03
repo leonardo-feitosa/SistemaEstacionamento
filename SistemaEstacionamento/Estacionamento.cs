@@ -236,6 +236,14 @@
             return quantidade;
         }
 
+        // Verifica se existe um ticket aberto para a placa informada.
+        public bool PossuiTicketAberto(string placa)
+        {
+            TicketEstacionamento? ticket = LocalizarTicketAbertoPorPlaca(placa);
+
+            return ticket != null;
+        }
+
         // Localiza e retorna um ticket aberto pela placa. Retorna null caso nenhum ticket seja encontrado.
         private TicketEstacionamento? LocalizarTicketAbertoPorPlaca(string placa)
         {

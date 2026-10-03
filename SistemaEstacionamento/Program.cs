@@ -211,6 +211,24 @@ namespace SistemaEstacionamento
 
             string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
+            // Interrompe o método quando nenhuma placa válida for informada.
+            if (string.IsNullOrWhiteSpace(placa))
+            {
+                Console.WriteLine();
+                Console.WriteLine("Placa inválida.");
+
+                return;
+            }
+
+            // Verifica se existe um ticket aberto antes de solicitar os minutos de permanência.
+            if (!estacionamento.PossuiTicketAberto(placa))
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Nenhum ticket aberto foi encontrado para a placa {placa}.");
+
+                return;
+            }
+
             Console.Write("Informe os minutos de permanência: ");
 
             // Tenta converter o valor informado para int antes de enviar para a regra de negócio.
@@ -292,6 +310,13 @@ namespace SistemaEstacionamento
             catch (TicketNaoEncontradoException ex)
             {
                 // Captura a exceção específica quando não existe ticket aberto para a placa informada.
+                Console.WriteLine();
+
+                Console.WriteLine($"Pagamento não realizado: {ex.Message}");
+            }
+            catch (TicketJaPagoException ex)
+            {
+                // Captura a exceção específica quando o ticket informado já possui pagamento registrado.
                 Console.WriteLine();
 
                 Console.WriteLine($"Pagamento não realizado: {ex.Message}");

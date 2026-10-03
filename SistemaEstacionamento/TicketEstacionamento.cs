@@ -70,11 +70,17 @@
             return true;
         }
 
-        // Registra o pagamento do ticket caso ele ainda esteja aberto e não tenha sido pago.
+        // Registra o pagamento do ticket caso ele ainda não tenha sido pago.
         public bool RegistrarPagamento()
         {
-            // Impede pagamento duplicado ou pagamento em um ticket já finalizado.
-            if (Finalizado || Pago)
+            // Impede que o mesmo ticket tenha o pagamento registrado mais de uma vez.
+            if (Pago)
+            {
+                throw new TicketJaPagoException($"O ticket {NumeroTicket} já está pago.");
+            }
+
+            // Um ticket finalizado não pode receber um novo pagamento.
+            if (Finalizado)
             {
                 return false;
             }
