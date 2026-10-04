@@ -335,6 +335,7 @@ namespace SistemaEstacionamento
 
             string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
+            // Interrompe o método quando nenhuma placa válida for informada.
             if (string.IsNullOrWhiteSpace(placa))
             {
                 Console.WriteLine();
@@ -359,6 +360,12 @@ namespace SistemaEstacionamento
                 Console.WriteLine();
 
                 Console.WriteLine($"Saída não realizada: {ex.Message}");
+            }
+            catch (TicketNaoPagoException ex)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine($"Saída não autorizada: {ex.Message}");
             }
         }
 

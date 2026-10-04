@@ -70,19 +70,19 @@
             return true;
         }
 
-        // Registra o pagamento do ticket caso ele ainda não tenha sido pago.
+        // Registra o pagamento do ticket caso ele ainda não tenha sido finalizado pago.
         public bool RegistrarPagamento()
         {
+            // Um ticket finalizado não pode receber nenhuma nova operação de pagamento.
+            if (Finalizado)
+            {
+                return false;
+            }
+
             // Impede que o mesmo ticket tenha o pagamento registrado mais de uma vez.
             if (Pago)
             {
                 throw new TicketJaPagoException($"O ticket {NumeroTicket} já está pago.");
-            }
-
-            // Um ticket finalizado não pode receber um novo pagamento.
-            if (Finalizado)
-            {
-                return false;
             }
 
             Pago = true;
@@ -100,8 +100,14 @@
         // Finaliza o ticket quando todas as condições para saída forem atendidas.
         public bool FinalizarSaida()
         {
-            // Reutiliza a regra definida no método PodeSair antes de finalizar o ticket.
-            if (!PodeSair())
+            // Um ticket sem pagamento não pode liberar a saída do veículo.
+            if (!Pago)
+            {
+                throw new TicketNaoPagoException($"O ticket {NumeroTicket} ainda não foi pago.");
+            }
+
+            // Um ticket já finalizado não pode ser finalizado novamente.
+            if (Finalizado)
             {
                 return false;
             }
@@ -136,6 +142,5 @@
             Console.WriteLine($"Pode sair: {podeSair}");
         }
     }
-
-
 }
+
