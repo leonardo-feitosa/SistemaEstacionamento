@@ -351,9 +351,14 @@ namespace SistemaEstacionamento
 
                 Console.WriteLine();
 
-                string mensagem = liberado ? "Saída liberada com sucesso." : "Saída não autorizada.";
-
-                Console.WriteLine(mensagem);
+                if (liberado)
+                {
+                    Console.WriteLine("Saída liberada com sucesso.");
+                }
+                else
+                {
+                    Console.WriteLine("Saída não autorizada.");
+                }
             }
             catch (TicketNaoEncontradoException ex)
             {
