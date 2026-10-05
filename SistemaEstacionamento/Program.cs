@@ -49,60 +49,71 @@ namespace SistemaEstacionamento
 
                 Console.Clear();
 
-                // Direciona a execução para o método correspondente à opção selecionada.
-                switch (opcao)
+                try
                 {
-                    case 1:
-                        RegistrarEntrada(estacionamento);
-                        break;
+                    // Direciona a execução para o método correspondente à opção selecionada.
+                    switch (opcao)
+                    {
+                        case 1:
+                            RegistrarEntrada(estacionamento);
+                            break;
 
-                    case 2:
-                        ListarVeiculos(estacionamento);
-                        break;
+                        case 2:
+                            ListarVeiculos(estacionamento);
+                            break;
 
-                    case 3:
-                        BuscarVeiculo(estacionamento);
-                        break;
+                        case 3:
+                            BuscarVeiculo(estacionamento);
+                            break;
 
-                    case 4:
-                        RegistrarPermanencia(estacionamento);
-                        break;
+                        case 4:
+                            RegistrarPermanencia(estacionamento);
+                            break;
 
-                    case 5:
-                        RegistrarPagamento(estacionamento);
-                        break;
+                        case 5:
+                            RegistrarPagamento(estacionamento);
+                            break;
 
-                    case 6:
-                        LiberarSaida(estacionamento);
-                        break;
+                        case 6:
+                            LiberarSaida(estacionamento);
+                            break;
 
-                    case 7:
-                        AlterarCor(estacionamento);
-                        break;
+                        case 7:
+                            AlterarCor(estacionamento);
+                            break;
 
-                    case 8:
-                        AlterarModelo(estacionamento);
-                        break;
+                        case 8:
+                            AlterarModelo(estacionamento);
+                            break;
 
-                    case 9:
-                        ListarTicketsPagos(estacionamento);
-                        break;
+                        case 9:
+                            ListarTicketsPagos(estacionamento);
+                            break;
 
-                    case 10:
-                        ListarTicketsPendentes(estacionamento);
-                        break;
+                        case 10:
+                            ListarTicketsPendentes(estacionamento);
+                            break;
 
-                    case 11:
-                        ExibirQuantidadeVeiculos(estacionamento);
-                        break;
+                        case 11:
+                            ExibirQuantidadeVeiculos(estacionamento);
+                            break;
 
-                    case 0:
-                        Console.WriteLine("Sistema encerrado.");
-                        break;
+                        case 0:
+                            Console.WriteLine("Sistema encerrado.");
+                            break;
 
-                    default:
-                        Console.WriteLine("Opção inválida.");
-                        break;
+                        default:
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+
+                    Console.WriteLine("Ocorreu um erro inesperado no sistema.");
+
+                    Console.WriteLine($"Detalhes: {ex.Message}");
                 }
 
                 // Evita pausar quando o usuário escolhe encerrar o sistema.
