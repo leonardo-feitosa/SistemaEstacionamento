@@ -9,12 +9,16 @@ namespace SistemaEstacionamento
         {
             // Cria uma única instância do estacionamento que será utilizada durante toda a execução do sistema.
             Estacionamento estacionamento = new Estacionamento();
-
+                        
             int opcao;
 
             do
             {
-                Console.Clear();
+                Console.Clear();                                                                                                         
+
+                Console.WriteLine();
+                Console.WriteLine("========================================");
+                Console.WriteLine();
 
                 Console.WriteLine("========================================");
                 Console.WriteLine("       CONTROLE DE ESTACIONAMENTO");
@@ -128,49 +132,66 @@ namespace SistemaEstacionamento
         // Solicita os dados do veículo e tenta registrar sua entrada no estacionamento.
         private static void RegistrarEntrada (Estacionamento estacionamento)
         {
-            Console.WriteLine("========================================");
-            Console.WriteLine("           REGISTRAR ENTRADA");
-            Console.WriteLine("========================================");
-            Console.WriteLine();
-
-            Console.Write("Placa: ");
-
-            string placa = Console.ReadLine()?.Trim() ?? string.Empty;
-
-            Console.Write("Modelo: ");
-
-            string modelo = Console.ReadLine()?.Trim() ?? string.Empty;
-
-            Console.Write("Cor: ");
-
-            string cor = Console.ReadLine()?.Trim() ?? string.Empty;
-
-            try
+            while (true)
             {
-                // Envia os dados para a classe Estacionamento, onde o veículo e o ticket serão criados.
-                bool registrado = estacionamento.RegistrarEntrada(placa, modelo, cor);
+                Console.Clear();    
 
+                Console.WriteLine("========================================");
+                Console.WriteLine("           REGISTRAR ENTRADA");
+                Console.WriteLine("========================================");
                 Console.WriteLine();
 
-                if (registrado)
+                Console.Write("Placa: ");
+
+                string placa = Console.ReadLine()?.Trim() ?? string.Empty;
+
+                Console.Write("Modelo: ");
+
+                string modelo = Console.ReadLine()?.Trim() ?? string.Empty;
+
+                Console.Write("Cor: ");
+
+                string cor = Console.ReadLine()?.Trim() ?? string.Empty;
+
+                Console.Write("Tipo: ");
+
+                string tipo = Console.ReadLine()?.Trim() ?? string.Empty;
+
+                try
                 {
-                    Console.WriteLine("Entrada registrada com sucesso.");
-                }                
-            }
-            catch (VeiculoJaEstaNoPatioException ex)
-            {
-                // Captura a exceção específica de regra de negócio quando o veículo já está no pátio
-                Console.WriteLine();
+                    // Envia os dados para a classe Estacionamento, onde o veículo e o ticket serão criados.
+                    bool registrado = estacionamento.RegistrarEntrada(placa, modelo, cor, tipo);
 
-                Console.WriteLine($"Entrada não permitida: {ex.Message}");
-            }
-            catch (ArgumentException ex)
-            {
-                // Captura erros de dados inválidos lançados pelo construtor da classe Veiculo.
-                Console.WriteLine();
+                    Console.WriteLine();
 
-                Console.WriteLine($"Erro ao registrar entrada: {ex.Message}");
-            }
+                    if (registrado)
+                    {
+
+                        Console.WriteLine("Entrada registrada com sucesso.");
+                    }                                       
+
+                    break;
+                }
+                catch (VeiculoJaEstaNoPatioException ex)
+                {
+                    // Captura a exceção específica de regra de negócio quando o veículo já está no pátio
+                    Console.WriteLine();
+
+                    Console.WriteLine($"Entrada não permitida: {ex.Message}");
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    // Captura erros de dados inválidos lançados pelo construtor da classe Veiculo.
+                    Console.WriteLine();
+
+                    Console.WriteLine($"Erro ao registrar entrada: {ex.Message}");
+                    Console.WriteLine("Pressione ENTER para tentar novamente.");
+
+                    Console.ReadKey();
+                }
+            }            
         }
 
         // Exibe todos os veículos que ainda permanecem no estacionamento.

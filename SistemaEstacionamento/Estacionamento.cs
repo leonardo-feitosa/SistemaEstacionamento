@@ -17,10 +17,10 @@
         }
 
         // Registra a entrada de um novo veículo no estacionamento.
-        public bool RegistrarEntrada(string placa, string modelo, string cor)
+        public bool RegistrarEntrada(string placa, string modelo, string cor, string tipo)
         {
             // Cria e valida o veículo antes de continuar com o registro da entrada.
-            Veiculo veiculo = new Veiculo(placa, modelo, cor);
+            Veiculo veiculo = new Veiculo(placa, modelo, cor, tipo);            
 
             // Verifica se já existe um ticket aberto para a mesma placa.
             TicketEstacionamento? ticketAberto = LocalizarTicketAbertoPorPlaca(veiculo.Placa);
