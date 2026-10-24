@@ -14,12 +14,8 @@ namespace SistemaEstacionamento
 
             do
             {
-                Console.Clear();                                                                                                         
-
-                Console.WriteLine();
-                Console.WriteLine("========================================");
-                Console.WriteLine();
-
+                Console.Clear();                                                                                                        
+                                
                 Console.WriteLine("========================================");
                 Console.WriteLine("       CONTROLE DE ESTACIONAMENTO");
                 Console.WriteLine("========================================");
@@ -153,9 +149,38 @@ namespace SistemaEstacionamento
 
                 string cor = Console.ReadLine()?.Trim() ?? string.Empty;
 
+                // Solicita o tipo do veículo através de opções numéricas.
+                Console.WriteLine("Selecione o tipo do veículo:");
+                Console.WriteLine("1 - Carro");
+                Console.WriteLine("2 - Moto");
+                Console.WriteLine();
+
                 Console.Write("Tipo: ");
 
-                string tipo = Console.ReadLine()?.Trim() ?? string.Empty;
+                // Tenta converter a entrada informada para um número inteiro.
+                if (!int.TryParse(Console.ReadLine(), out int numeroTipo))
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Tipo inválido. Digite apenas números.");
+                    Console.WriteLine("Pressione ENTER para tentar novamente.");
+                    Console.ReadLine();
+
+                    continue;
+                }
+
+                // Verifica se o número corresponde a um valor definido no enum.
+                if (!Enum.IsDefined(typeof(TipoVeiculo), numeroTipo))
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Tipo inválido. Selecione 1 para CARRO ou 2 para MOTO.");
+                    Console.WriteLine("Pressione ENTER para tentar novamente.");
+                    Console.ReadLine();
+
+                    continue;
+                }
+
+                // Converte o número validado para o tipo enum.
+                TipoVeiculo tipo = (TipoVeiculo)numeroTipo;
 
                 try
                 {

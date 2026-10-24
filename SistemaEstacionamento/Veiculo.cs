@@ -12,10 +12,10 @@
         public string Cor { get; private set; }
 
         // Tipoo do veículo. Só pode ser alterada pelos métodos da própria classe.
-        public string Tipo { get; private set; }
+        public TipoVeiculo Tipo { get; private set; }
 
         // Construtor responsável por validar e inicializar os dados obrigatórios do veículo.
-        public Veiculo(string placa, string modelo, string cor, string tipo)
+        public Veiculo(string placa, string modelo, string cor, TipoVeiculo tipo)
         {
             // Impede a criação de um veículo sem placa válida.
             if (string.IsNullOrWhiteSpace(placa))
@@ -35,26 +35,19 @@
                 throw new ArgumentException("A cor é obrigatória.", nameof(cor));
             }
 
-            // Impede a criação de um veículo sem tipo válida.
-            if (string.IsNullOrWhiteSpace(tipo))
+            // Impede a utilização de valores não definidos no enum.
+            if (!Enum.IsDefined(typeof(TipoVeiculo), tipo))
             {
-                throw new ArgumentException("O tipo é obrigatória.", nameof(tipo));
-            }
-
-            // Normaliza o tipo antes de verificar os valores permitidos.
-            tipo = tipo.Trim().ToUpperInvariant();
-
-            // Impede a criação de um veículo sem tipo válida.
-            if (tipo != "CARRO" && tipo != "MOTO")
-            {
-                throw new ArgumentException("O tipo é deverá ser somente CARRO ou MOTO.", nameof(tipo));
+                throw new ArgumentOutOfRangeException(nameof(tipo), "O tipo deverá ser CARRO ou MOTO.");
             }
 
             // Remove espaços extras e padroniza os dados em letras maiúsculas.
-            Placa = placa.Trim().ToUpper();
-            Modelo = modelo.Trim().ToUpper();
-            Cor = cor.Trim().ToUpper();
-            Tipo = tipo.Trim().ToUpper();
+            Placa = placa.Trim().ToUpperInvariant();
+            Modelo = modelo.Trim().ToUpperInvariant();
+            Cor = cor.Trim().ToUpperInvariant();
+
+            // Armazena o tipo validado.
+            Tipo = tipo;
 
         }
 
@@ -94,7 +87,7 @@
             Console.WriteLine($"Placa: {Placa}");
             Console.WriteLine($"Modelo: {Modelo}");
             Console.WriteLine($"Cor: {Cor}");
-            Console.WriteLine($"Tipo: {Tipo}");
+            Console.WriteLine($"Tipo: {Tipo.ToString().ToUpperInvariant()}");
         }
     }
 }

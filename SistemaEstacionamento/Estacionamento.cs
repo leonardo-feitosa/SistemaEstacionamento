@@ -17,7 +17,7 @@
         }
 
         // Registra a entrada de um novo veículo no estacionamento.
-        public bool RegistrarEntrada(string placa, string modelo, string cor, string tipo)
+        public bool RegistrarEntrada(string placa, string modelo, string cor, TipoVeiculo tipo)
         {
             // Cria e valida o veículo antes de continuar com o registro da entrada.
             Veiculo veiculo = new Veiculo(placa, modelo, cor, tipo);            
