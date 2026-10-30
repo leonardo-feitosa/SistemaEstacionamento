@@ -219,19 +219,34 @@ namespace SistemaEstacionamento
             }            
         }
 
-        // Exibe todos os veículos que ainda permanecem no estacionamento.
-        private static void ListarVeiculos (Estacionamento estacionamento)
+        // Exibe os veículos que possuem tickets abertos no estacionamento.
+        private static void ListarVeiculos(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("      VEÍCULOS NO ESTACIONAMENTO");
             Console.WriteLine("========================================");
             Console.WriteLine();
 
-            estacionamento.ListarVeiculosAtivos();
+            // Solicita os tickets ativos à classe Estacionamento.
+            IReadOnlyList<TicketEstacionamento> tickets = estacionamento.ObterTicketsAtivos();
+
+            // Verifica se a consulta retornou algum registro.
+            if (tickets.Count == 0)
+            {
+                Console.WriteLine("Nenhum veículo no estacionamento.");
+                return;
+            }
+
+            // A responsabilidade pela exibição agora pertence ao Program.
+            foreach (TicketEstacionamento ticket in tickets)
+            {
+                ticket.ExibirDados();
+                Console.WriteLine("--------------------------------");
+            }
         }
 
-        // Solicita uma placa e exibe os registros encontrados para o veículo.
-        private static void BuscarVeiculo (Estacionamento estacionamento)
+        // Solicita uma placa e exibe todos os tickets relacionados ao veículo.
+        private static void BuscarVeiculo(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("           BUSCAR VEÍCULO");
@@ -242,18 +257,31 @@ namespace SistemaEstacionamento
 
             string placa = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            // Impede a realização da busca quando nenhuma placa válida for informada.
+            // Impede a busca quando nenhuma placa válida for informada.
             if (string.IsNullOrWhiteSpace(placa))
             {
                 Console.WriteLine();
                 Console.WriteLine("Placa inválida.");
-
                 return;
             }
 
+            // Solicita todos os tickets associados à placa informada.
+            IReadOnlyList<TicketEstacionamento> tickets = estacionamento.BuscarVeiculo(placa);
+
             Console.WriteLine();
 
-            estacionamento.BuscarVeiculo(placa);
+            if (tickets.Count == 0)
+            {
+                Console.WriteLine("Veículo não encontrado.");
+                return;
+            }
+
+            // Exibe todos os registros encontrados, inclusive tickets finalizados.
+            foreach (TicketEstacionamento ticket in tickets)
+            {
+                ticket.ExibirDados();
+                Console.WriteLine("--------------------------------");
+            }
         }
 
         // Solicita a placa e o tempo de permanência para atualizar o ticket aberto do veículo.
@@ -518,26 +546,54 @@ namespace SistemaEstacionamento
             }
         }
 
-        // Exibe todos os tickets que já possuem pagamento registrado.
-        private static void ListarTicketsPagos (Estacionamento estacionamento)
+        // Exibe todos os tickets que possuem pagamento registrado.
+        private static void ListarTicketsPagos(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("            TICKETS PAGOS");
             Console.WriteLine("========================================");
             Console.WriteLine();
 
-            estacionamento.ListarTicketsPagos();
+            // Obtém os tickets pagos, incluindo os já finalizados.
+            IReadOnlyList<TicketEstacionamento> tickets = estacionamento.ObterTicketsPagos();
+
+            if (tickets.Count == 0)
+            {
+                Console.WriteLine("Nenhum ticket pago encontrado.");
+                return;
+            }
+
+            // Percorre os tickets retornados e exibe seus dados.
+            foreach (TicketEstacionamento ticket in tickets)
+            {
+                ticket.ExibirDados();
+                Console.WriteLine("--------------------------------");
+            }
         }
 
-        // Exibe todos os tickets que ainda estão pendentes de pagamento.
-        private static void ListarTicketsPendentes (Estacionamento estacionamento)
+        // Exibe todos os tickets abertos que ainda não foram pagos.
+        private static void ListarTicketsPendentes(Estacionamento estacionamento)
         {
             Console.WriteLine("========================================");
             Console.WriteLine("          TICKETS PENDENTES");
             Console.WriteLine("========================================");
             Console.WriteLine();
 
-            estacionamento.ListarTicketsPendentes();
+            // Obtém os tickets pendentes de pagamento.
+            IReadOnlyList<TicketEstacionamento> tickets = estacionamento.ObterTicketsPendentes();
+
+            if (tickets.Count == 0)
+            {
+                Console.WriteLine("Nenhum ticket pendente encontrado.");
+                return;
+            }
+
+            // Exibe os tickets encontrados.
+            foreach (TicketEstacionamento ticket in tickets)
+            {
+                ticket.ExibirDados();
+                Console.WriteLine("--------------------------------");
+            }
         }
 
         // Consulta e exibe a quantidade atual de veículos que permanecem no pátio.

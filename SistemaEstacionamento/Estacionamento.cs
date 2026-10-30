@@ -1,4 +1,8 @@
-﻿namespace SistemaEstacionamento
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SistemaEstacionamento
 {
     internal class Estacionamento
     {
@@ -122,118 +126,48 @@
             return ticket.Veiculo.AlterarModelo(novoModelo);
         }
 
-        // Exibe todos os veículos que ainda possuem tickets não finalizados.
-        public void ListarVeiculosAtivos()
+        // Retorna uma lista com os tickets dos veículos que ainda estão no estacionamento.
+        public IReadOnlyList<TicketEstacionamento> ObterTicketsAtivos()
         {
-            bool encontrou = false;
-
-            foreach (TicketEstacionamento ticket in tickets)
-            {
-                // Um ticket não finalizado representa um veículo que ainda está no estacionamento.
-                if (!ticket.Finalizado)
-                {
-                    ticket.ExibirDados();
-
-                    Console.WriteLine("--------------------------------");
-
-                    encontrou = true;
-                }
-            }
-
-            if (!encontrou)
-            {
-                Console.WriteLine("Nenhum veículo no estacionamento.");
-            }
+            // Filtra os tickets que ainda não foram finalizados.
+            return tickets.Where(ticket => !ticket.Finalizado).ToList();
         }
 
-        // Exibe todos os tickets que já tiveram o pagamento registrado.
-        public void ListarTicketsPagos()
+        // Retorna todos os tickets que possuem pagamento registrado.
+        public IReadOnlyList<TicketEstacionamento> ObterTicketsPagos()
         {
-            bool encontrou = false;
-
-            foreach (TicketEstacionamento ticket in tickets)
-            {
-                if (ticket.Pago)
-                {
-                    ticket.ExibirDados();
-
-                    Console.WriteLine("--------------------------------");
-
-                    encontrou = true;
-                }
-            }
-
-            if (!encontrou)
-            {
-                Console.WriteLine("Nenhum ticket pago encontrado.");
-            }
+            // Seleciona os tickets pagos, inclusive os que já foram finalizados.
+            return tickets.Where(ticket => ticket.Pago).ToList();
         }
 
-        // Exibe todos os tickets que ainda não foram pagos e também não foram finalizados.
-        public void ListarTicketsPendentes()
+        // Retorna os tickets que ainda estão abertos e pendentes de pagamento.
+        public IReadOnlyList<TicketEstacionamento> ObterTicketsPendentes()
         {
-            bool encontrou = false;
-
-            foreach (TicketEstacionamento ticket in tickets)
-            {
-                // O ticket é considerado pendente enquanto não estiver pago e não estiver finalizado.
-                if (!ticket.Pago && !ticket.Finalizado)
-                {
-                    ticket.ExibirDados();
-
-                    Console.WriteLine("--------------------------------");
-
-                    encontrou = true;
-                }
-            }
-
-            if (!encontrou)
-            {
-                Console.WriteLine("Nenhum ticket pendente encontrado.");
-            }
+            // Filtra somente os tickets não pagos e não finalizados.
+            return tickets.Where(ticket => !ticket.Pago && !ticket.Finalizado).ToList();
         }
 
-        // Busca e exibe todos os tickets relacionados à placa informada.
-        public void BuscarVeiculo(string placa)
+        // Retorna todos os tickets associados à placa informada, incluindo os finalizados.
+        public IReadOnlyList<TicketEstacionamento> BuscarVeiculo(string placa)
         {
-            bool encontrou = false;
-
-            foreach (TicketEstacionamento ticket in tickets)
+            // Impede buscas com placa vazia.
+            if (string.IsNullOrWhiteSpace(placa))
             {
-                // Compara as placas ignorando diferenças entre letras maiúsculas e minúsculas.
-                bool mesmaPlaca = string.Equals(ticket.Veiculo.Placa, placa, StringComparison.OrdinalIgnoreCase);
-
-                if (mesmaPlaca)
-                {
-                    ticket.ExibirDados();
-
-                    Console.WriteLine("--------------------------------");
-
-                    encontrou = true;
-                }
+                throw new ArgumentException("A placa é obrigatória.", nameof(placa));
             }
 
-            if (!encontrou)
-            {
-                Console.WriteLine("Veículo não encontrado.");
-            }
+            // Remove espaços nas extremidades da placa informada.
+            string placaNormalizada = placa.Trim();
+
+            // Retorna todos os registros que correspondem à placa.
+            return tickets.Where(ticket => string.Equals(ticket.Veiculo.Placa, placaNormalizada, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        // Retorna a quantidade de veículos que ainda permanecem no estacionamento.
+        // Retorna a quantidade de veículos que possuem tickets abertos.
         public int QuantidadeVeiculosNoPatio()
         {
-            int quantidade = 0;
-
-            foreach (TicketEstacionamento ticket in tickets)
-            {
-                // Apenas tickets não finalizados representam veículos atualmente no pátio.
-                if (!ticket.Finalizado)
-                {
-                    quantidade++;
-                }
-            }
-
-            return quantidade;
+            // Conta somente os tickets que ainda não foram finalizados.
+            return tickets.Count(ticket => !ticket.Finalizado);
         }
 
         // Verifica se existe um ticket aberto para a placa informada.
@@ -244,22 +178,11 @@
             return ticket != null;
         }
 
-        // Localiza e retorna um ticket aberto pela placa. Retorna null caso nenhum ticket seja encontrado.
+        // Localiza o primeiro ticket aberto associado à placa informada.
         private TicketEstacionamento? LocalizarTicketAbertoPorPlaca(string placa)
         {
-            foreach (TicketEstacionamento ticket in tickets)
-            {
-                // Compara a placa cadastrada com a placa recebida ignorando maiúsculas e minúsculas.
-                bool mesmaPlaca = string.Equals(ticket.Veiculo.Placa, placa, StringComparison.OrdinalIgnoreCase);
-
-                // O ticket só é considerado aberto quando pertence à mesma placa e ainda não foi finalizado.
-                if (mesmaPlaca && !ticket.Finalizado)
-                {
-                    return ticket;
-                }
-            }
-
-            return null;
+            // Retorna null quando não existe um ticket aberto para a placa.
+            return tickets.FirstOrDefault(ticket => !ticket.Finalizado && string.Equals(ticket.Veiculo.Placa, placa?.Trim(), StringComparison.OrdinalIgnoreCase));
         }
     }
 }
