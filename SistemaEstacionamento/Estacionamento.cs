@@ -170,6 +170,28 @@ namespace SistemaEstacionamento
             return tickets.Count(ticket => !ticket.Finalizado);
         }
 
+        // Retorna a quantidade de veículos ativos agrupados pelo tipo.
+        public IReadOnlyDictionary<TipoVeiculo, int> ObterQuantidadeVeiculosPorTipo()
+        {
+            // Agrupa somente os tickets que ainda não foram finalizados.
+            Dictionary<TipoVeiculo, int> quantidades = tickets
+                .Where(ticket => !ticket.Finalizado)
+                .GroupBy(ticket => ticket.Veiculo.Tipo)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count());
+
+            // Garante que Carro e Moto estejam presentes, mesmo quando a quantidade for zero.
+            foreach (TipoVeiculo tipo in Enum.GetValues<TipoVeiculo>())
+            {
+                if (!quantidades.ContainsKey(tipo))
+                {
+                    quantidades.Add(tipo, 0);
+                }
+            }
+
+            // Retorna os resultados para a camada de apresentação.
+            return new System.Collections.ObjectModel.ReadOnlyDictionary<TipoVeiculo, int>(quantidades);
+        }
+
         // Verifica se existe um ticket aberto para a placa informada.
         public bool PossuiTicketAberto(string placa)
         {

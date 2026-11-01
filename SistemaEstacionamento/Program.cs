@@ -31,6 +31,7 @@ namespace SistemaEstacionamento
                 Console.WriteLine(" 9 - Listar tickets pagos");
                 Console.WriteLine("10 - Listar tickets pendentes");
                 Console.WriteLine("11 - Quantidade de veículos no pátio");
+                Console.WriteLine("12 - Quantidade de veículos por tipo");
                 Console.WriteLine(" 0 - Sair");
                 Console.WriteLine();
 
@@ -96,6 +97,10 @@ namespace SistemaEstacionamento
 
                         case 11:
                             ExibirQuantidadeVeiculos(estacionamento);
+                            break;
+
+                        case 12:
+                            ExibirQuantidadeVeiculosPorTipo(estacionamento);
                             break;
 
                         case 0:
@@ -610,6 +615,36 @@ namespace SistemaEstacionamento
             string mensagem = quantidade == 1 ? "Existe 1 veículo no pátio." : $"Existem {quantidade} veículos no pátio.";
 
             Console.WriteLine(mensagem);
+        }
+
+
+        // Consulta e exibe a quantidade de veículos ativos agrupados por tipo.
+        private static void ExibirQuantidadeVeiculosPorTipo(Estacionamento estacionamento)
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("      QUANTIDADE POR TIPO DE VEÍCULO");
+            Console.WriteLine("========================================");
+            Console.WriteLine();
+
+            // Solicita à classe Estacionamento as quantidades agrupadas.
+            IReadOnlyDictionary<TipoVeiculo, int> quantidades = estacionamento.ObterQuantidadeVeiculosPorTipo();
+
+            // Percorre os tipos na ordem definida no enum.
+            foreach (TipoVeiculo tipo in Enum.GetValues<TipoVeiculo>())
+            {
+                // Obtém a quantidade correspondente ao tipo.
+                int quantidade = quantidades[tipo];
+
+                // Exibe o tipo e a quantidade de veículos.
+                Console.WriteLine($"{tipo}: {quantidade}");
+            }
+
+            Console.WriteLine("----------------------------------------");
+
+            // Exibe também a quantidade total de veículos no pátio.
+            int total = estacionamento.QuantidadeVeiculosNoPatio();
+
+            Console.WriteLine($"Total de veículos: {total}");
         }
 
         // Pausa a execução até que o usuário pressione alguma tecla.
